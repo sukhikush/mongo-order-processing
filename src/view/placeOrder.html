@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Order Form</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #f4f4f9;
+            }
+
+            h1 {
+                text-align: center;
+                color: #333;
+            }
+
+            form {
+                max-width: 800px;
+                margin: 0 auto;
+                background: #fff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th,
+            td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            th {
+                background-color: #007BFF;
+                color: white;
+            }
+
+            td input {
+                width: 90%;
+                padding: 5px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            .button-container {
+                display: flex;
+                /* justify-content: space-evenly; */
+                margin: 20px 0;
+                gap: 10px;
+            }
+
+            button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                background-color: #007BFF;
+                color: white;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+        </style>
+        <script>
+            function addItem() {
+                const table = document.getElementById("itemsTable");
+                const rowCount = table.rows.length;
+
+                const row = table.insertRow(-1);
+
+                row.innerHTML = `
+        <td>${rowCount}</td>
+        <td><input type="text" id="item${rowCount}Name" name="item${rowCount}Name" required></td>
+        <td><input type="number" id="item${rowCount}Price" name="item${rowCount}Price" required></td>
+        <td><input type="number" id="item${rowCount}Quantity" name="item${rowCount}Quantity" required></td>
+      `;
+            }
+
+            function deleteLastItem() {
+                const table = document.getElementById("itemsTable");
+                const rowCount = table.rows.length;
+
+                if (rowCount > 1) {
+                    table.deleteRow(-1);
+                } else {
+                    alert("At least one item is required.");
+                }
+            }
+
+            async function submitOrder(event) {
+                event.preventDefault();
+
+                const customerName = document.getElementById("customerName").value;
+                const table = document.getElementById("itemsTable");
+                const rows = table.rows;
+
+                const items = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const name = rows[i].cells[1].children[0].value;
+                    const price = rows[i].cells[2].children[0].value;
+                    const quantity = rows[i].cells[3].children[0].value;
+
+                    items.push({ name, price, quantity });
+                }
+
+                const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+
+                const raw = JSON.stringify({ customerName, items });
+
+                const requestOptions = {
+                    method: "POST",
+                    headers: myHeaders,
+                    body: raw,
+                    redirect: "follow",
+                };
+
+                try {
+                    const response = await fetch("http://localhost:8000/api/orders", requestOptions);
+                    const result = await response.text();
+                    console.log(result);
+                    alert("Order submitted successfully!");
+                    window.location.replace(window.location)
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("An error occurred while submitting the order.");
+                }
+            }
+        </script>
+    </head>
+
+    <body>
+        <h1>Order Form</h1>
+        <form onsubmit="submitOrder(event)">
+            <label for="customerName"><b>Customer Name:</b></label><br>
+            <input type="text" id="customerName" name="customerName" required
+                style="width: 96%; padding: 10px; margin:10px 0px 20px 0px;"><br>
+
+            <table id="itemsTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Item Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><input type="text" id="item1Name" name="item1Name" required></td>
+                        <td><input type="number" id="item1Price" name="item1Price" required></td>
+                        <td><input type="number" id="item1Quantity" name="item1Quantity" required></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="button-container">
+                <button type="button" onclick="addItem()" style="background: #009300cf;">+ Add Item</button>
+                <button type="button" onclick="deleteLastItem()" style="background: #9b2020de;">Delete Last Item</button>
+            </div>
+
+            <div class="submit-button" style="text-align: center; margin-top: 40px;">
+                <button type="submit">Submit Order</button>
+                <button onclick="{window.location.replace(window.location.origin+'/view')}" style="background: gray;">View Order</button>
+            </div>
+        </form>
+    </body>
+
+</html>
