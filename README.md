@@ -42,12 +42,12 @@ ecommerce-order/
 
 Follow these steps to get the application up and running with Docker Compose:
 
-**Clone the repository**:
+**1. Clone the repository**:
 ```bash
 git clone <your-repository-url> cd <your-repository-directory>
 ```
 
-**Start the application with Docker Compose**:
+**2. Start the application with Docker Compose**:
 Run the following command to start application
   ```bash
   npm i
@@ -55,7 +55,7 @@ Run the following command to start application
   ```
   This will install and start the application.
   
-**Access the application**:
+**3. Access the application**:
 Open your browser and go to the application URL (`http://localhost:8000`).
    
 
