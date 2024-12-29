@@ -54,10 +54,14 @@ Run the following command to start application
   npm run dev
   ```
   This will install and start the application.
-
+  
 **Access the application**:
 Open your browser and go to the application URL (`http://localhost:8000`).
    
+
+## ⚠️ Note
+  - **I have intentionally pushed the `.env` file to the repository so that the app can be tested.**
+  - It has dummy user id and pass
 
 ## Endpoints
 #### `http://localhost:8000/` 
